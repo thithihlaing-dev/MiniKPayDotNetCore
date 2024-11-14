@@ -15,15 +15,15 @@ public partial class AppDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Customer> Customers { get; set; }
+    public virtual DbSet<TblCustomer> TblCustomers { get; set; }
 
-    public virtual DbSet<CustomerBalance> CustomerBalances { get; set; }
+    public virtual DbSet<TblCustomerBalance> TblCustomerBalances { get; set; }
 
-    public virtual DbSet<Deposit> Deposits { get; set; }
+    public virtual DbSet<TblDeposit> TblDeposits { get; set; }
 
-    public virtual DbSet<Transaction> Transactions { get; set; }
+    public virtual DbSet<TblTransaction> TblTransactions { get; set; }
 
-    public virtual DbSet<Withdraw> Withdraws { get; set; }
+    public virtual DbSet<TblWithdraw> TblWithdraws { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
@@ -31,11 +31,11 @@ public partial class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Customer>(entity =>
+        modelBuilder.Entity<TblCustomer>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("Customer");
+                .ToTable("TblCustomer");
 
             entity.Property(e => e.CustomerFullName)
                 .HasMaxLength(255)
@@ -47,11 +47,11 @@ public partial class AppDbContext : DbContext
                 .IsFixedLength();
         });
 
-        modelBuilder.Entity<CustomerBalance>(entity =>
+        modelBuilder.Entity<TblCustomerBalance>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("CustomerBalance");
+                .ToTable("TblCustomerBalance");
 
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.BalanceId).ValueGeneratedOnAdd();
@@ -61,11 +61,11 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.CustomerId).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<Deposit>(entity =>
+        modelBuilder.Entity<TblDeposit>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("Deposit");
+                .ToTable("TblDeposit");
 
             entity.Property(e => e.DateTime)
                 .HasDefaultValueSql("(getdate())")
@@ -77,11 +77,11 @@ public partial class AppDbContext : DbContext
                 .IsFixedLength();
         });
 
-        modelBuilder.Entity<Transaction>(entity =>
+        modelBuilder.Entity<TblTransaction>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("Transaction");
+                .ToTable("TblTransaction");
 
             entity.Property(e => e.DateTime)
                 .HasDefaultValueSql("(getdate())")
@@ -98,11 +98,11 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.TransactionPin).HasMaxLength(255);
         });
 
-        modelBuilder.Entity<Withdraw>(entity =>
+        modelBuilder.Entity<TblWithdraw>(entity =>
         {
             entity
                 .HasNoKey()
-                .ToTable("Withdraw");
+                .ToTable("TblWithdraw");
 
             entity.Property(e => e.DateTime).HasColumnType("datetime");
             entity.Property(e => e.WithdrawAmount).HasColumnType("decimal(18, 0)");

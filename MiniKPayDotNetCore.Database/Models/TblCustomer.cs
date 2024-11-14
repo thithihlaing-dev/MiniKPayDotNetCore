@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MiniKPayDotNetCore.Database.Models;
 
-public partial class Customer
+public partial class TblCustomer
 {
     public int CustomerId { get; set; }
 

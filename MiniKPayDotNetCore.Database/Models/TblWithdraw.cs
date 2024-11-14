@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MiniKPayDotNetCore.Database.Models;
 
-public partial class Withdraw
+public partial class TblWithdraw
 {
     public int WithdrawId { get; set; }
 
