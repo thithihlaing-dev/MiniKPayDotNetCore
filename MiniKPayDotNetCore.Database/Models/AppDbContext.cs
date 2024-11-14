@@ -33,9 +33,8 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<TblCustomer>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("TblCustomer");
+            entity.HasKey(e => e.CustomerId);
+            entity.ToTable("TblCustomer");
 
             entity.Property(e => e.CustomerFullName)
                 .HasMaxLength(255)
@@ -49,9 +48,8 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblCustomerBalance>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("TblCustomerBalance");
+            entity.HasKey(e=>e.BalanceId);
+            entity.ToTable("TblCustomerBalance");
 
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.BalanceId).ValueGeneratedOnAdd();
@@ -79,9 +77,8 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblTransaction>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("TblTransaction");
+            entity.HasKey(e => e.TransactionId);
+            entity.ToTable("TblTransaction");
 
             entity.Property(e => e.DateTime)
                 .HasDefaultValueSql("(getdate())")
@@ -100,9 +97,8 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblWithdraw>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("TblWithdraw");
+            entity.HasKey(e=> e.WithdrawId);
+            entity.ToTable("TblWithdraw");
 
             entity.Property(e => e.DateTime).HasColumnType("datetime");
             entity.Property(e => e.WithdrawAmount).HasColumnType("decimal(18, 0)");
