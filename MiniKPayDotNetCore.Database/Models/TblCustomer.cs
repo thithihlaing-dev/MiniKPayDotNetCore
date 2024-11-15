@@ -9,7 +9,7 @@ public partial class TblCustomer
 
     public string CustomerFullName { get; set; } = null!;
 
-    public string MobileNo { get; set; } = null!;
+    public string CustomerMobileNo { get; set; } = null!;
 
     public string CustomerPin { get; set; } = null!;
 }
