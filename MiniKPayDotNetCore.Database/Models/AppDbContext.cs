@@ -33,22 +33,24 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<TblCustomer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId);
+            entity
+                .HasKey(e => e.CustomerId);
             entity.ToTable("TblCustomer");
 
             entity.Property(e => e.CustomerFullName)
                 .HasMaxLength(255)
                 .IsFixedLength();
             entity.Property(e => e.CustomerId).ValueGeneratedOnAdd();
-            entity.Property(e => e.CustomerPin).HasMaxLength(255);
-            entity.Property(e => e.MobileNo)
+            entity.Property(e => e.CustomerMobileNo)
                 .HasMaxLength(20)
                 .IsFixedLength();
+            entity.Property(e => e.CustomerPin).HasMaxLength(255);
         });
 
         modelBuilder.Entity<TblCustomerBalance>(entity =>
         {
-            entity.HasKey(e=>e.BalanceId);
+            entity
+                .HasKey(e => e.BalanceId);
             entity.ToTable("TblCustomerBalance");
 
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 0)");
@@ -56,14 +58,13 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.BalancePin)
                 .HasMaxLength(255)
                 .HasDefaultValueSql("((0))");
-            entity.Property(e => e.CustomerId).HasMaxLength(255);
         });
 
         modelBuilder.Entity<TblDeposit>(entity =>
         {
             entity
-                .HasNoKey()
-                .ToTable("TblDeposit");
+                .HasKey(e => e.DepositId);
+            entity.ToTable("TblDeposit");
 
             entity.Property(e => e.DateTime)
                 .HasDefaultValueSql("(getdate())")
@@ -77,7 +78,8 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblTransaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId);
+            entity
+                .HasKey(e => e.TransactionId);
             entity.ToTable("TblTransaction");
 
             entity.Property(e => e.DateTime)
@@ -97,16 +99,17 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<TblWithdraw>(entity =>
         {
-            entity.HasKey(e=> e.WithdrawId);
+            entity
+                .HasKey(e => e.WithdrawId);
             entity.ToTable("TblWithdraw");
 
             entity.Property(e => e.DateTime).HasColumnType("datetime");
             entity.Property(e => e.WithdrawAmount).HasColumnType("decimal(18, 0)");
             entity.Property(e => e.WithdrawId).ValueGeneratedOnAdd();
             entity.Property(e => e.WithdrawMobileNo).HasMaxLength(20);
-            entity.Property(e => e.WithdrawPin)
-                .HasMaxLength(255)
-                .HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.DateTime)
+                 .HasDefaultValueSql("(getdate())")
+                 .HasColumnType("datetime");
         });
 
         OnModelCreatingPartial(modelBuilder);

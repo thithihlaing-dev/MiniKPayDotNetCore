@@ -1,4 +1,6 @@
 using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Customer;
+using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Deposit;
+using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Withdraw;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseWithdrawServiceEndpoint();
+app.UseDepositServiceEndpoint();
 app.UseHttpsRedirection();
 
 app.UseCustomersServiceEndpoint();

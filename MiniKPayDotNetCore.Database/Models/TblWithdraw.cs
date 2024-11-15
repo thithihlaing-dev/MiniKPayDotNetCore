@@ -11,7 +11,5 @@ public partial class TblWithdraw
 
     public decimal WithdrawAmount { get; set; }
 
-    public string? WithdrawPin { get; set; }
-
     public DateTime DateTime { get; set; }
 }
