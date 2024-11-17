@@ -9,7 +9,7 @@ public partial class TblCustomerBalance
 
     public int CustomerId { get; set; }
 
-    public decimal? Balance { get; set; }
+    public decimal Balance { get; set; }
 
     public string BalancePin { get; set; } = null!;
 }

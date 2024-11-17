@@ -6,64 +6,90 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MiniKPayDotNetCore.Domain.Features.CustomerBalance
+namespace MiniKPayDotNetCore.Domain.Features.CustomerBalance;
+
+public class CustomerBalanceService
 {
-    public class CustomerBalanceService
+    private readonly AppDbContext _db = new AppDbContext();
+
+    public TblCustomerBalance CreateCustomerBalance(TblCustomerBalance customerBalance)
     {
-        private readonly AppDbContext _db = new AppDbContext();
+        _db.TblCustomerBalances
+            .Add(customerBalance);
+        _db.SaveChanges();
+        return customerBalance;
+    }
 
-        public TblCustomerBalance CreateCustomerBalance(TblCustomerBalance customerBalance)
-        {
-            _db.TblCustomerBalances
-                .Add(customerBalance);
-            _db.SaveChanges();
-            return customerBalance;
+    public TblCustomerBalance DepositCustomerBalance(int customerId , Decimal amount)
+    {
+        var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId == 
+        customerId);
+
+        if (customerBalance is null) {
+            return null;
         }
 
-        public TblCustomerBalance DepositCustomerBalance(int customerId , Decimal amount)
+        customerBalance.Balance += amount;
+        _db.Entry(customerBalance).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        return customerBalance;
+    }
+
+    public TblCustomerBalance WithdrawCustomerBalance(int customerId, Decimal amount)
+    {
+        var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId == customerId);      
+        if (customerBalance.Balance < amount)
         {
-            var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId == 
-            customerId);
+            return null;
+        }
+        customerBalance.Balance -= amount;
+        if (customerBalance.Balance < 10000)
+        {
+            return null;
+        }
+        _db.Entry(customerBalance).State = EntityState.Modified;
+        _db.SaveChanges();
+        return customerBalance;
+    }
 
-            if (customerBalance is null) {
-                return null;
-            }
+    public TblCustomerBalance GetCustomerBalance(int customerId)
+    {
+        var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
+        if (customerBalance is null) 
+        {
+            return null; 
+        }
+        return customerBalance;
+    }
 
-            customerBalance.Balance += amount;
-            _db.Entry(customerBalance).State = EntityState.Modified;
-            _db.SaveChanges();
+    public TblCustomerBalance? FromMobileCustomerBalance(int customerId, Decimal amount)
+    {
+        var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
+        if (customerBalance is null)
+        {
+            return null;
 
-            return customerBalance;
+        }
+        customerBalance.Balance -= amount;
+        _db.Entry(customerBalance).State = EntityState.Modified;
+        _db.SaveChanges();
+
+        return customerBalance;
+    }
+
+    public TblCustomerBalance ToMobileCustomerBalance(int customerId, Decimal amount)
+    {
+        var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
+        if (customerBalance is null)
+        {
+            return null;
         }
 
-        public object WithdrawCustomerBalance(int customerId, Decimal amount)
-        {
-            var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId ==
-            customerId);
+        customerBalance.Balance += amount;
+        _db.Entry(customerBalance).State = EntityState.Modified;
+        _db.SaveChanges();
 
-           
-            if (customerBalance.Balance < amount)
-            {
-                var message = new ResponseMessage
-                {
-                    responseMessage = "Cannot Withdraw Your Balance is Low."
-                };
-                return message;
-
-            }
-            customerBalance.Balance -= amount;
-            if (customerBalance.Balance < 10000)
-            {
-                var message = new ResponseMessage
-                {
-                    responseMessage = "Cannot Withdraw Your Balance will be left at least 10000."
-                };
-                return message;
-
-            }
-            _db.Entry(customerBalance).State = EntityState.Modified;
-            _db.SaveChanges();
-            return customerBalance;
-        }
+        return customerBalance;
     }
 }

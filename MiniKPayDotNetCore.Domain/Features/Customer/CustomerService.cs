@@ -33,6 +33,16 @@ namespace MiniKPayDotNetCore.Domain.Features.Customer
             return item;
         }
 
+        public TblCustomer GetCustomer(string mobile)
+        {
+            var item = _db.TblCustomers.FirstOrDefault(x => x.CustomerMobileNo == mobile);
+            if (item is null)
+            {
+                return null;
+            }
+            return item;
+        }
+
         public TblCustomer CreateCustomer( TblCustomer customer , Decimal amount)
         {
             _db.TblCustomers.Add(customer);
@@ -97,8 +107,8 @@ namespace MiniKPayDotNetCore.Domain.Features.Customer
 
         public bool DeleteCustomer(int id)
         {
-            var item = _db.TblCustomers.AsNoTracking().FirstOrDefault();
-            if(item is null)
+            var item = _db.TblCustomers.AsNoTracking().FirstOrDefault(x => x.CustomerId == id);
+            if (item is null)
             {
                 return false;
             }

@@ -14,42 +14,34 @@ namespace MiniKPayDotNetCore.Domain.Features.Withdraw
         private readonly AppDbContext _db = new AppDbContext();
         private static readonly CustomerBalanceService _customerBalanceService = new CustomerBalanceService();
 
-        public object CreateWithdraw(string mobileNo , decimal amount)
+        public String CreateWithdraw(String mobileNo , Decimal amount)
         {
             var customer = _db.TblCustomers.AsNoTracking().FirstOrDefault(x => x.CustomerMobileNo == mobileNo);
+            var customerBalance = _customerBalanceService.WithdrawCustomerBalance(customer.CustomerId, amount);
+             
             if (customer is null)
-            {
-                var message = new ResponseMessage
-                {
-                    responseMessage = "Invalid Mobile Number."
-                };
-                return message;
+            {               
+                return "Invalid Mobile Number.";
             }
-            if (amount > 0)
+            else if (amount < 0)
             {
-                var customerBalance = _customerBalanceService.WithdrawCustomerBalance(customer.CustomerId, amount);
-                if (customerBalance != null)
-                {
-                    var withdraw = new TblWithdraw
-                    {
-                        WithdrawMobileNo = mobileNo,
-                        WithdrawAmount = amount,
-                        DateTime = DateTime.Now
-                    };
-                    _db.TblWithdraws.Add(withdraw);
-                    _db.SaveChanges();
-                   
-                    return customerBalance;
-                }
-
-               
+                return "Invalid Withdraw Amount";               
             }
-
-            var error = new ResponseMessage
+            else if (customerBalance != null  )
             {
-                responseMessage = "Invalid Data"
+                return "Invalid Withdraw Amount. Your balance will left At least 10000";
+            }
+            var withdraw = new TblWithdraw
+            {
+                WithdrawMobileNo = mobileNo,
+                WithdrawAmount = amount,
+                DateTime = DateTime.Now
             };
-            return error;
+            _db.TblWithdraws.Add(withdraw);
+            _db.SaveChanges();
+
+            return "Successful Withdraw";
+
         }
     }
 }
