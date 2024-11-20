@@ -49,3 +49,25 @@ Notes
 dotnet ef dbcontext scaffold "Server=.;Database=DotNetTrainingBatch5;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models -c AppDbContext -f (wtite in vs cmd)
 OR
 dotnet ef dbcontext scaffold "Server=.;Database=DotNetTrainingBatch5;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o Models -c AppDbContext -t Tbl-Name -f (wtite in vs cmd)
+
+-------------------------------
+
+
+Digital Wallet 
+
+-Wallet User
+-Transfer
+-Deposit
+-Withdraw
+
+Notes 
+FromMobileNo != ToMobileNo
+FromMobileNo Balance Check
+ToMobileNo Check
+
+FromMobileNo -
+ToMobileNo +
+
+CreateNewTransaction
+Transaction Sender Message
+Transaction Receive Message
