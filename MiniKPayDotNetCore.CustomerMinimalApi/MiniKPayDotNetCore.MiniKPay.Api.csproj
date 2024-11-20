@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MiniKPayDotNetCore.Database\MiniKPayDotNetCore.Database.csproj" />
-    <ProjectReference Include="..\MiniKPayDotNetCore.Domain\MiniKPayDotNetCore.Domain.csproj" />
+    <ProjectReference Include="..\MiniKPayDotNetCore.Database\MiniKPayDotNetCore.MiniKPay.Database.csproj" />
+    <ProjectReference Include="..\MiniKPayDotNetCore.Domain\MiniKPayDotNetCore.MiniKPay.Domain.csproj" />
   </ItemGroup>
 
 </Project>
