@@ -31,9 +31,9 @@ public static class CustomersServiceEndpoint
         .WithName("GetCustomer")
         .WithOpenApi();
 
-        app.MapPost("/customers{balance}", (TblCustomer customer, Decimal balance) =>
+        app.MapPost("/customers/{balance}", (TblCustomer customer, Decimal amount) =>
         {
-            var customerModel = _service.CreateCustomer(customer,balance);
+            var customerModel = _service.CreateCustomer(customer,amount);
             if(customerModel is null)
             {
                 return Results.BadRequest("Deposit Balance at least 10000");

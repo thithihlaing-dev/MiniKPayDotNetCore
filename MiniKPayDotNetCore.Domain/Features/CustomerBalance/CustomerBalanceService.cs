@@ -55,7 +55,7 @@ public class CustomerBalanceService
 
     public TblCustomerBalance GetCustomerBalance(int customerId)
     {
-        var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
+        var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId == customerId);
         if (customerBalance is null) 
         {
             return null; 
@@ -63,22 +63,22 @@ public class CustomerBalanceService
         return customerBalance;
     }
 
-    public TblCustomerBalance? FromMobileCustomerBalance(int customerId, Decimal amount)
+    public TblCustomerBalance FromMobileTransferCustomerBalance(int customerId, Decimal balance)
     {
-        var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
+        var customerBalance = _db.TblCustomerBalances.AsNoTracking().FirstOrDefault(x => x.CustomerId == customerId);
         if (customerBalance is null)
         {
             return null;
 
         }
-        customerBalance.Balance -= amount;
+        customerBalance.Balance = balance;
         _db.Entry(customerBalance).State = EntityState.Modified;
         _db.SaveChanges();
 
         return customerBalance;
     }
 
-    public TblCustomerBalance ToMobileCustomerBalance(int customerId, Decimal amount)
+    public TblCustomerBalance ToMobileTransferCustomerBalance(int customerId, Decimal balance)
     {
         var customerBalance = _db.TblCustomerBalances.FirstOrDefault(x => x.CustomerId == customerId);
         if (customerBalance is null)
@@ -86,7 +86,7 @@ public class CustomerBalanceService
             return null;
         }
 
-        customerBalance.Balance += amount;
+        customerBalance.Balance = balance;
         _db.Entry(customerBalance).State = EntityState.Modified;
         _db.SaveChanges();
 

@@ -54,7 +54,7 @@ public class DepositService
         };
         _db.TblDeposits.Add(deposit);
         _db.SaveChanges();
-        return ($"Deposit Successful. {mobileNo} {deposit.DepositAmount} ");
+        return ($"Deposit Successful. MobileNo.{mobileNo} , Amount {deposit.DepositAmount} ");
 
 
 

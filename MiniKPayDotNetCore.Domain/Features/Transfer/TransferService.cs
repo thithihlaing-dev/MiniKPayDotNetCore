@@ -21,25 +21,53 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
             {
                 var fromSender = _customerService.GetCustomer(fromMobile);
                 var toReceiver = _customerService.GetCustomer(toMobile);
+               
 
-                if (fromSender != null 
-                    && toReceiver != null 
+
+                if (fromSender is null)
+                {
+                    return ($"Your Mobile Number {fromMobile} is Wrong");
+                }
+                else if (fromSender.CustomerPin != pin)
+                {
+                    return ($"Your Pin Code {pin} is Wrong ");
+                }
+                else if (amount < 0)
+                {
+                    return ($"Invalid Amount {amount}");
+                }
+                else if (toReceiver is null)
+                {
+                    return ($"Transfer Mobile Number is Wrong {toMobile}");
+                }
+
+
+
+                if (fromSender is not null
+                    && toReceiver is not null
                     && fromSender.CustomerPin == pin
                     && amount > 0
-                    ) {
+                    )
+                {
 
                     var fromSenderBalance = _customerBalanceService.GetCustomerBalance(fromSender.CustomerId);
-                    var toReciverBalance = _customerBalanceService.GetCustomerBalance(toReceiver.CustomerId);
-
-                    if (fromSenderBalance.Balance < amount || fromSenderBalance.Balance < 10000 )
+                    if (fromSenderBalance.Balance < amount || fromSenderBalance.Balance < 10000)
                     {
-                        return "Cannot Transfer Your Balance is Low";
+                        return ($"Cannot Transfer Your Balance {fromSenderBalance.Balance}  is Low");
                     }
-                    
-                    
+                    fromSenderBalance.Balance -= amount;
+                    if (fromSenderBalance.Balance < 10000)
+                    {
+                        return "Invalid Transfer Amount. Your balance will left At least 10000";
+                    }
+                    var send = _customerBalanceService.FromMobileTransferCustomerBalance(fromSenderBalance.CustomerId, fromSenderBalance.Balance);
 
-                    var send = _customerBalanceService.FromMobileCustomerBalance(fromSenderBalance.CustomerId,amount);
-                    var receive = _customerBalanceService.ToMobileCustomerBalance(toReciverBalance.CustomerId, amount);
+
+
+                    
+                    var toReciverBalance = _customerBalanceService.GetCustomerBalance(toReceiver.CustomerId);
+                    toReciverBalance.Balance += amount;
+                    var receive = _customerBalanceService.ToMobileTransferCustomerBalance(toReciverBalance.CustomerId, toReciverBalance.Balance);
 
                     var transaction = new TblTransaction
                     {
@@ -51,23 +79,7 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
                     };
                     _db.TblTransactions.Add(transaction);
                     _db.SaveChanges();
-                    return "Transaction is Successful";
-                }
-                else if ( fromSender is null )
-                {
-                    return "Your Mobile Number is Wrong";
-                }
-                else if (toReceiver is null)
-                {
-                    return "Transfer Mobile Number is Wrong";
-                }
-                else if (amount < 0)
-                {
-                    return "Invalid Amount";
-                }
-                else if (fromSender.CustomerPin != pin)
-                {
-                    return "Your Pin Code is Wrong";
+                    return ($"Transaction is Successful. ToMobile Number {toMobile}. Amount{amount} ");
                 }
 
             }

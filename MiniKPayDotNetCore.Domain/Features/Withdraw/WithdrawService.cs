@@ -21,13 +21,13 @@ namespace MiniKPayDotNetCore.Domain.Features.Withdraw
              
             if (customer is null)
             {               
-                return "Invalid Mobile Number.";
+                return ($"Invalid Mobile Number.{mobileNo}");
             }
             else if (amount < 0)
             {
-                return "Invalid Withdraw Amount";               
+                return ($"Invalid Withdraw Amount {amount}");               
             }
-            else if (customerBalance != null  )
+            else if (customerBalance is  null  )
             {
                 return "Invalid Withdraw Amount. Your balance will left At least 10000";
             }
@@ -40,7 +40,7 @@ namespace MiniKPayDotNetCore.Domain.Features.Withdraw
             _db.TblWithdraws.Add(withdraw);
             _db.SaveChanges();
 
-            return "Successful Withdraw";
+            return ($"Successful Withdraw. Mobile Number{mobileNo} Amount{amount}");
 
         }
     }

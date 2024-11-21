@@ -26,7 +26,7 @@ namespace MiniKPayDotNetCore.Domain.Features.Customer
 
         public TblCustomer GetCustomer(int id) 
         {
-            var item = _db.TblCustomers.FirstOrDefault(x => x.CustomerId == id);
+            var item = _db.TblCustomers.AsNoTracking().FirstOrDefault(x => x.CustomerId == id);
             if (item is null) {
                 return null;
             }
@@ -35,7 +35,7 @@ namespace MiniKPayDotNetCore.Domain.Features.Customer
 
         public TblCustomer GetCustomer(string mobile)
         {
-            var item = _db.TblCustomers.FirstOrDefault(x => x.CustomerMobileNo == mobile);
+            var item = _db.TblCustomers.AsNoTracking().FirstOrDefault(x => x.CustomerMobileNo == mobile);
             if (item is null)
             {
                 return null;
