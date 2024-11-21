@@ -1,7 +1,7 @@
 using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Customer;
 using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Deposit;
-using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Transfer;
 using MiniKPayDotNetCore.CustomerMinimalApi.Controllers.Withdraw;
+using MiniKPayDotNetCore.MiniKPay.Api.Controllers.Transfer;
 
 var builder = WebApplication.CreateBuilder(args);
 

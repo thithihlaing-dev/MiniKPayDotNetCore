@@ -71,3 +71,29 @@ ToMobileNo +
 CreateNewTransaction
 Transaction Sender Message
 Transaction Receive Message
+
+
+ValidationError
+LogicError
+CRUD Error
+Success
+
+
+{
+		"ResCode" , "ResDesp" , "ResType" , IsSuccess , "IsError" 
+}
+
+
+001
+002
+003
+
+100
+
+999
+
+Success
+SystemError
+Warning
+ValitionError
+
