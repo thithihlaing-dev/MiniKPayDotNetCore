@@ -1,4 +1,5 @@
-﻿using MiniKPayDotNetCore.Database.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MiniKPayDotNetCore.Database.Models;
 using MiniKPayDotNetCore.Domain.Features.Customer;
 using MiniKPayDotNetCore.Domain.Features.CustomerBalance;
 using MiniKPayDotNetCore.MiniKPay.Database.Models;
@@ -16,38 +17,42 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
         public static readonly CustomerService _customerService = new CustomerService();
         public static readonly CustomerBalanceService _customerBalanceService = new CustomerBalanceService();
 
-        public async Task<TransferResponseModel>CreateTransfer(String fromMobile,
+        public async Task<Result<ResultTransferResponseModel>> CreateTransfer(String fromMobile,
                                                          String toMobile,
                                                          Decimal amount,
                                                          String message,
                                                          String pin)
         {
-            TransferResponseModel model = new TransferResponseModel();
+            //TransferResponseModel model = new TransferResponseModel();
+            Result<ResultTransferResponseModel> model = new Result<ResultTransferResponseModel>();
+
             if (fromMobile != toMobile )
             {
-                var fromSender = _customerService.GetCustomer(fromMobile);
-                var toReceiver = _customerService.GetCustomer(toMobile);
-               
+                //var fromSender = _customerService.GetCustomer(fromMobile);
+                //var toReceiver = _customerService.GetCustomer(toMobile);
+
+                var fromSender = await _db.TblCustomers.AsNoTracking().FirstOrDefaultAsync(x => x.CustomerMobileNo == fromMobile);
+                var toReceiver = await _db.TblCustomers.AsNoTracking().FirstOrDefaultAsync(x => x.CustomerMobileNo == toMobile);
 
 
                 if (fromSender is null)
                 {
-                    model.Response = BaseResponseModel.ValidationError("999", $"Your Mobile Number {fromMobile} is Wrong");                  
+                    model = Result<ResultTransferResponseModel>.ValidationError($"Your Mobile Number {fromMobile} is Wrong");                  
                     goto Result;
                 }
                 else if (fromSender.CustomerPin != pin)
                 {
-                    model.Response = BaseResponseModel.ValidationError("999", $"Your Pin Code {pin} is Wrong ");
+                    model = Result<ResultTransferResponseModel>.ValidationError($"Your Pin Code {pin} is Wrong ");
                     goto Result;
                 }
                 else if (amount < 0)
                 {
-                    model.Response = BaseResponseModel.ValidationError("999", $"Invalid Amount {amount}");
+                    model = Result<ResultTransferResponseModel>.ValidationError( $"Invalid Amount {amount}");
                     goto Result;
                 }
                 else if (toReceiver is null)
                 {
-                    model.Response = BaseResponseModel.ValidationError("999", $"Transfer Mobile Number is Wrong {toMobile}");
+                    model = Result<ResultTransferResponseModel>.ValidationError($"Transfer Mobile Number is Wrong {toMobile}");
                     goto Result;
                 }
 
@@ -60,16 +65,16 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
                     )
                 {
 
-                    var fromSenderBalance = _customerBalanceService.GetCustomerBalance(fromSender.CustomerId);
+                    var fromSenderBalance = await _db.TblCustomerBalances.AsNoTracking().FirstOrDefaultAsync(x => x.CustomerId == fromSender.CustomerId);
                     if (fromSenderBalance.Balance < amount || fromSenderBalance.Balance < 10000)
                     {
-                        model.Response = BaseResponseModel.ValidationError("999", $"Cannot Transfer Your Balance {fromSenderBalance.Balance}  is Low");
+                        model = Result<ResultTransferResponseModel>.ValidationError($"Cannot Transfer Your Balance {fromSenderBalance.Balance}  is Low");
                         goto Result;
                     }
                     fromSenderBalance.Balance -= amount;
                     if (fromSenderBalance.Balance < 10000)
                     {
-                        model.Response = BaseResponseModel.ValidationError("999", "Invalid Transfer Amount. Your balance will left At least 10000");
+                        model = Result<ResultTransferResponseModel>.ValidationError("Invalid Transfer Amount. Your balance will left At least 10000");
                         goto Result;
 
                     }
@@ -77,8 +82,8 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
 
 
 
-                    
-                    var toReciverBalance = _customerBalanceService.GetCustomerBalance(toReceiver.CustomerId);
+                    var toReciverBalance = await _db.TblCustomerBalances.AsNoTracking().FirstOrDefaultAsync(x => x.CustomerId == toReceiver.CustomerId);
+
                     toReciverBalance.Balance += amount;
                     var receive = _customerBalanceService.ToMobileTransferCustomerBalance(toReciverBalance.CustomerId, toReciverBalance.Balance);
 
@@ -92,14 +97,20 @@ namespace MiniKPayDotNetCore.Domain.Features.Transfer
                     };
                     _db.TblTransactions.Add(transaction);
                     _db.SaveChanges();
-                    model.Response = BaseResponseModel.Success("000", $"Transaction is Successful. ToMobile Number {toMobile}. Amount{amount} ");
+
+                    ResultTransferResponseModel result = new ResultTransferResponseModel()
+                    {
+                        Transaction = transaction
+                    };
+                    model = Result<ResultTransferResponseModel>.Success(result,"Success.");
                     goto Result;
+                    //return model;
 
                 }
 
             }
 
-            model.Response = BaseResponseModel.ValidationError("999", "Insert Different Mobile Number");
+            model = Result<ResultTransferResponseModel>.ValidationError("Insert Different Mobile Number");
         Result:
             return model;
 

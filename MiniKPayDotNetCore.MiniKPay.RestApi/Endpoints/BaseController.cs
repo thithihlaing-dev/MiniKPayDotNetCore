@@ -33,5 +33,19 @@ namespace MiniKPayDotNetCore.MiniKPay.RestApi.Endpoints
 
             return StatusCode(500, "Invalid Response Model. Please add BaseResponseModel to your ResponseModel.");
         }
+
+        [NonAction]
+        public IActionResult Execute<T>(Result<T> model)
+        {
+
+
+            if (model.IsValidationError )
+                return BadRequest(model);
+
+            if (model.IsSystemError)
+                return StatusCode(500, model);
+
+            return Ok(model);
+        }
     }
 }

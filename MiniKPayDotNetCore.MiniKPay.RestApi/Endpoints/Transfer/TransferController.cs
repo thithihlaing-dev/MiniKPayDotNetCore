@@ -21,7 +21,9 @@ namespace MiniKPayDotNetCore.MiniKPay.RestApi.Endpoints
 
         public async Task<IActionResult> PostTransfer(string fromMobileNo, string toMobileNo, decimal amount, string message, string pin)
         {
-            var transferModel = await _transferService.CreateTransfer(fromMobileNo, toMobileNo, amount, message, pin);
+            //var transferModel = await _transferService.CreateTransfer(fromMobileNo, toMobileNo, amount, message, pin);
+            var transferModel2 = await _transferService.CreateTransfer(fromMobileNo, toMobileNo, amount, message, pin);
+
             //if (transferModel.Response.IsSuccess)
             //    return Ok(transferModel);
             //if (transferModel.Response.RespType == EnumRespType.ValidationError)
@@ -30,8 +32,9 @@ namespace MiniKPayDotNetCore.MiniKPay.RestApi.Endpoints
             //if (transferModel.Response.RespType == EnumRespType.SystemError)
             //    return StatusCode(500, transferModel);
 
-            return Execute(transferModel);
-           
+            //return Execute(transferModel);
+            return Execute(transferModel2);
+
         }
     }
 }
